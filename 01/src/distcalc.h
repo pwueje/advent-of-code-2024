@@ -9,12 +9,12 @@
 
 #pragma once
 
+#ifndef PJEXX_AOC2024_DISTCALC_H_
+#define PJEXX_AOC2024_DISTCALC_H_
+
 #include <algorithm>
 #include <numeric>
 #include <ranges>
-
-#ifndef PJEXX_AOC2024_DISTCALC_H_
-#define PJEXX_AOC2024_DISTCALC_H_
 
 namespace pjexx::aoc2024
 {
@@ -37,6 +37,22 @@ auto distance(std::ranges::input_range auto list1, std::ranges::input_range auto
                          std::views::transform([](auto a) { return std::abs(std::get<0>(a) - std::get<1>(a)); });
 
     return std::accumulate(merged_ranges.begin(), merged_ranges.end(), 0);
+}
+
+/**
+ * @brief Calculate the similarity between two lists
+ *
+ * The similarity is calculated by adding up each number in the first list multiplied by the count in the second list.
+ *
+ * @param list1 The first list
+ * @param list2 The second list
+ * @return The similarity score for the two lists
+ */
+auto similarity(std::ranges::input_range auto list1, std::ranges::input_range auto list2)
+{
+    auto intermediateRange =
+        list1 | std::views::transform([list2](auto a) { return a * std::count(list2.begin(), list2.end(), a); });
+    return std::accumulate(intermediateRange.begin(), intermediateRange.end(), 0);
 }
 }  // namespace pjexx::aoc2024
 

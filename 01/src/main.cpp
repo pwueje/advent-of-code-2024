@@ -54,6 +54,7 @@ int main(int argc, char* argv[])
     }
 
     std::cout << "Distance between lists: " << pjexx::aoc2024::distance(lista, listb) << '\n';
+    std::cout << "The similarity between both lists: " << pjexx::aoc2024::similarity(lista, listb) << '\n';
 
     return EXIT_SUCCESS;
 }
