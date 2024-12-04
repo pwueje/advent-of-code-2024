@@ -23,6 +23,7 @@ include(BuildProperties)
 include(Coverage)
 
 add_subdirectory(01)
+add_subdirectory(02)
 
 include(CTest)
 enable_testing()
