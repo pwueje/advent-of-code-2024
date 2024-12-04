@@ -50,3 +50,42 @@ TEST_CASE("Calc safety of report")
         REQUIRE_FALSE(report.isSafe());
     }
 }
+
+TEST_CASE("Calc safety of report after Problem Dampener")
+{
+    SECTION("Report is safely decreasing")
+    {
+        pjexx::aoc2024::Report report {7, 6, 4, 2, 1};
+        REQUIRE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is safely increasing")
+    {
+        pjexx::aoc2024::Report report {1, 3, 6, 7, 9};
+        REQUIRE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is not safe, because of big increase")
+    {
+        pjexx::aoc2024::Report report {1, 2, 7, 8, 9};
+        REQUIRE_FALSE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is not safe, because of big decrease")
+    {
+        pjexx::aoc2024::Report report {9, 7, 6, 2, 1};
+        REQUIRE_FALSE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is not safe, because of violating monotonicity")
+    {
+        pjexx::aoc2024::Report report {1, 3, 2, 4, 5};
+        REQUIRE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is not safe, because of violating strict monotonicity")
+    {
+        pjexx::aoc2024::Report report {8, 6, 4, 4, 1};
+        REQUIRE(report.isSafeWithDampener());
+    }
+}

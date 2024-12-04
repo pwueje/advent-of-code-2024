@@ -63,6 +63,9 @@ int main(int argc, char* argv[])
 
     std::cout << "Out of " << reports.size() << " reports are "
               << std::ranges::count_if(reports, [](auto report) { return report.isSafe(); }) << " safe.\n";
+    std::cout << "Out of " << reports.size() << " reports are "
+              << std::ranges::count_if(reports, [](auto report) { return report.isSafeWithDampener(); })
+              << " safe with problem dampener.\n";
 
     return EXIT_SUCCESS;
 }

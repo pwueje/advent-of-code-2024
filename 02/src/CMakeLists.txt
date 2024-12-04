@@ -20,6 +20,6 @@ target_compile_features(${executable} PRIVATE cxx_std_20)
 find_package(argparse REQUIRED)
 target_link_libraries(${executable} PRIVATE argparse::argparse)
 
-if (EXISTS ../data/reports.txt)
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/../data/reports.txt)
     configure_file(../data/reports.txt reports.txt COPYONLY)
 endif()
