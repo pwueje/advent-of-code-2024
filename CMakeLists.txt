@@ -22,6 +22,7 @@ include(ClangTidy)
 include(BuildProperties)
 include(Coverage)
 
+add_subdirectory(01)
 
 include(CTest)
 enable_testing()
