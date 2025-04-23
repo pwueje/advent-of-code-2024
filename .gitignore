@@ -364,4 +364,4 @@ FodyWeavers.xsd
 build
 CMakeUserPresets.json
 
-.vscode
+.venv
