@@ -37,28 +37,27 @@ bool Report::isSafeWithDampener() const
         return true;
     }
 
-    auto is_safe_after_removal = [this](size_t skip) {
-        auto filtered = levels_ 
-            | std::views::enumerate
-            | std::views::filter([skip](const auto& pair) { return pair.first != skip; })
-            | std::views::transform([](const auto& pair) { return pair.second; });
-
-        std::vector<int> modified(filtered.begin(), filtered.end());
-
+    auto is_safe = [](const std::vector<int>& v) {
         auto isPairwiseDistanceSafe = [](int val1, int val2)
         { return std::abs(val1 - val2) > 0 && std::abs(val1 - val2) <= 3; };
 
         bool pairwiseDistanceSafe = std::ranges::all_of(
-            modified | std::views::pairwise_transform(isPairwiseDistanceSafe),
+            v | std::views::pairwise_transform(isPairwiseDistanceSafe),
             [](bool item) { return item; });
 
         return pairwiseDistanceSafe &&
-               (std::ranges::is_sorted(modified) || std::ranges::is_sorted(modified, std::greater {}));
+               (std::ranges::is_sorted(v) || std::ranges::is_sorted(v, std::greater {}));
     };
 
     return std::ranges::any_of(
         std::views::iota(size_t{0}, levels_.size()),
-        is_safe_after_removal
+        [&](size_t skip) {
+            std::vector<int> filtered;
+            filtered.reserve(levels_.size() - 1);
+            for (size_t i = 0; i < levels_.size(); ++i)
+                if (i != skip) filtered.push_back(levels_[i]);
+            return is_safe(filtered);
+        }
     );
 }
 
