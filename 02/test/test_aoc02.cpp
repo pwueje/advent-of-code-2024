@@ -88,4 +88,22 @@ TEST_CASE("Calc safety of report after Problem Dampener")
         pjexx::aoc2024::Report report {8, 6, 4, 4, 1};
         REQUIRE(report.isSafeWithDampener());
     }
+
+    SECTION("Report is not safe, because of two violations")
+    {
+        pjexx::aoc2024::Report report {34, 33, 35, 38, 41, 42, 48, 48};
+        REQUIRE_FALSE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is safe, because of only one violation at the end")
+    {
+        pjexx::aoc2024::Report report {61, 62, 63, 66, 66};
+        REQUIRE(report.isSafeWithDampener());
+    }
+
+    SECTION("Report is safe, because of only one violation at the begin")
+    {
+        pjexx::aoc2024::Report report {63, 62, 63, 66, 67};
+        REQUIRE(report.isSafeWithDampener());
+    }
 }

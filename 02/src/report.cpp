@@ -23,6 +23,7 @@ bool Report::isSafe() const
 {
     auto isPairwiseDistanceSafe = [](int val1, int val2)
     { return std::abs(val1 - val2) > 0 && std::abs(val1 - val2) <= 3; };
+
     auto pairwiseDistanceSafe = std::ranges::all_of(levels_ | std::views::pairwise_transform(isPairwiseDistanceSafe),
                                                     [](bool item) { return item; });
 
@@ -32,56 +33,33 @@ bool Report::isSafe() const
 
 bool Report::isSafeWithDampener() const
 {
-    enum class Monotonicity : std::uint8_t
-    {
-        Increasing,
-        Decreasing
-    };
-
-    std::optional<int> prev                  = std::nullopt;
-    std::optional<Monotonicity> monotonicity = std::nullopt;
-
-    int violationCount = 0;
-
-    for (auto item : levels_)
-    {
-        if (!prev)
-        {
-            prev = item;
-            continue;
-        }
-
-        bool violation = false;
-
-        if (std::abs(*prev - item) == 0 || std::abs(*prev - item) > 3)
-        {
-            violation = true;
-        }
-
-        auto currentMonotonicity = *prev < item ? Monotonicity::Increasing : Monotonicity::Decreasing;
-
-        if (monotonicity && *monotonicity != currentMonotonicity)
-        {
-            violation = true;
-        }
-        else if (!monotonicity)
-        {
-            monotonicity = currentMonotonicity;
-        }
-
-        if (violation && ++violationCount <= 1)
-        {
-            continue;
-        }
-
-        if (violation)
-        {
-            return false;
-        }
-
-        prev = item;
+    if (isSafe()) {
+        return true;
     }
 
-    return true;
+    auto is_safe_after_removal = [this](size_t skip) {
+        auto filtered = levels_ 
+            | std::views::enumerate
+            | std::views::filter([skip](const auto& pair) { return pair.first != skip; })
+            | std::views::transform([](const auto& pair) { return pair.second; });
+
+        std::vector<int> modified(filtered.begin(), filtered.end());
+
+        auto isPairwiseDistanceSafe = [](int val1, int val2)
+        { return std::abs(val1 - val2) > 0 && std::abs(val1 - val2) <= 3; };
+
+        bool pairwiseDistanceSafe = std::ranges::all_of(
+            modified | std::views::pairwise_transform(isPairwiseDistanceSafe),
+            [](bool item) { return item; });
+
+        return pairwiseDistanceSafe &&
+               (std::ranges::is_sorted(modified) || std::ranges::is_sorted(modified, std::greater {}));
+    };
+
+    return std::ranges::any_of(
+        std::views::iota(size_t{0}, levels_.size()),
+        is_safe_after_removal
+    );
 }
+
 }  // namespace pjexx::aoc2024
